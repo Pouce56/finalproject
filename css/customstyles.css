@@ -1,0 +1,97 @@
+h1{
+    color: rgb(36, 85, 208);
+    font-style: normal;
+    text-decoration: underline;
+    font-weight: bold;
+    font-family: cursive;
+    text-align: center;
+}
+
+h3{
+    color: rgb(20, 106, 49);
+    font-style: normal;
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: large;
+    font-family: cursive;
+}
+
+h4{
+    color: rgb(187, 158, 28);
+    font-style: italic;
+    text-decoration: none;
+    font-weight: normal;
+    font-family: cursive;
+}
+
+body{
+    background-color: rgb(243, 232, 217);
+}
+
+.maincontent ul{
+    color: rgb(187, 158, 28);
+    font-family: cursive;
+    font-size: small;
+    font-weight: lighter;
+}
+
+.maincontent ol{
+    color: rgb(18, 133, 10);
+    font-family: cursive;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.footer{
+    background-color: rgb(165, 94, 13);
+    padding: 10px;
+    display:flow-root;
+    justify-content: space-around;
+    align-items: center;
+    font-family: cursive;
+    color: rgb(167, 222, 172);
+    text-align: center;
+}
+
+.footer a{
+    color: rgb(167, 222, 172);
+    text-align: center;
+}
+
+.navbar{
+    background-color: rgb(165, 94, 13);
+    padding: 10px;
+    display:flow-root;
+    justify-content: space-around;
+    align-items: center;
+    font-family: cursive;
+    color: rgb(167, 222, 172);
+    text-align: center;
+}
+
+.navbar a{
+    color: rgb(167, 222, 172);
+    text-align: center;
+    display:flow-root;
+}
+
+.sidebar{
+    background-color: rgb(140, 78, 40);
+    width: 130px;
+    height: 100%;
+    position: fixed;
+    left: 0%;
+    padding: 15px;
+    box-sizing: border-box;
+    }
+
+.sidebar a{
+    display: list-item;
+    color: rgb(134, 194, 228);
+    display: flow-root;
+}
+
+.maincontent{
+    margin-left: 130px;
+    padding: 20px;
+}

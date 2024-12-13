@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Froggy Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #game-area {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(180deg, #4fc3f7, #0288d1);
+            background-size: 100% 200%;
+            animation: riverFlow 5s linear infinite;
+        }
+
+        @keyframes riverFlow {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 0% 100%;
+            }
+        }
+
+        .frog {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            border: 2px solid #388e3c;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, #4caf50, #2e7d32);
+            box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .frog::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 15px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 5px 0 0 #ffffff;
+        }
+
+        .frog::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: #000000;
+            border-radius: 50%;
+            box-shadow: 12px 0 0 #000000;
+        }
+
+        .fly {
+            position: absolute;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background-color: #ffeb3b;
+            border-radius: 50%;
+            border: 2px solid #fbc02d;
+            background-image: radial-gradient(circle, #ffeb3b, #fbc02d);
+            box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .red-square {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #ff0000;
+            border: 2px solid #b71c1c;
+        }
+
+        .red-square::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 12px 0 0 #ffffff;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        #high-score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        #timer {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: red;
+            display: none;
+        }
+
+        #controls {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .control-button:hover {
+            background-color: #388e3c;
+        }
+
+        .control-link {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #0288d1;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .control-link:hover {
+            background-color: #01579b;
+        }
+
+        #instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-area">
+        <div id="score">Score: 0</div>
+        <div id="high-score">High Score: 0</div>
+        <div id="timer">Time: 0s</div>
+        <div id="game-over">Game Over</div>
+
+        <div id="controls">
+            <button id="restart-button" class="control-button">Restart</button>
+            <a href="../index.html" class="control-link">Resume</a>
+            <a href="scratchpage.html" class="control-link">Celiac Disease</a>
+        </div>
+
+        <div id="instruction">Use Arrow Keys to Move the Frog</div>
+
+        <div class="frog" id="frog"></div>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const frog = document.getElementById('frog');
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('high-score');
+        const timerElement = document.getElementById('timer');
+        const gameOverElement = document.getElementById('game-over');
+        const restartButton = document.getElementById('restart-button');
+        const controls = document.getElementById('controls');
+        const instruction = document.getElementById('instruction');
+
+        let score = 0;
+        let highScore = 0;
+        let gameOver = false;
+        let difficultyMultiplier = 1;
+        let timeElapsed = 0;
+        let hasMoved = false;
+
+        const moveDistance = 20;
+        const gameWidth = gameArea.offsetWidth;
+        const gameHeight = gameArea.offsetHeight;
+
+        function moveFrog(event) {
+            if (gameOver) return;
+
+            const frogPosition = frog.getBoundingClientRect();
+
+            if (event.key === 'ArrowLeft' && frogPosition.left > 0) {
+                frog.style.left = frog.offsetLeft - moveDistance + 'px';
+                hideInstructions();
+            } else if (event.key === 'ArrowRight' && frogPosition.right < gameWidth) {
+                frog.style.left = frog.offsetLeft + moveDistance + 'px';
+                hideInstructions();
+            } else if (event.key === 'ArrowUp' && frogPosition.top > 0) {
+                frog.style.bottom = parseInt(frog.style.bottom || '20') + moveDistance + 'px';
+                hideInstructions();
+            } else if (event.key === 'ArrowDown' && frogPosition.bottom < gameHeight) {
+                frog.style.bottom = parseInt(frog.style.bottom || '20') - moveDistance + 'px';
+                hideInstructions();
+            }
+        }
+
+        function hideInstructions() {
+            if (!hasMoved) {
+                instruction.style.display = 'none';
+                hasMoved = true;
+            }
+        }
+
+        function createFly() {
+            if (gameOver) return;
+
+            const fly = document.createElement('div');
+            fly.className = 'fly';
+            fly.style.left = Math.random() * (gameWidth - 30) + 'px';
+            fly.style.top = '0px';
+            gameArea.appendChild(fly);
+
+            const flyInterval = setInterval(() => {
+                if (gameOver) {
+                    clearInterval(flyInterval);
+                    fly.remove();
+                    return;
+                }
+
+                const flyPosition = fly.getBoundingClientRect();
+
+                if (flyPosition.top >= gameHeight) {
+                    fly.remove();
+                    clearInterval(flyInterval);
+                } else {
+                    fly.style.top = fly.offsetTop + 5 * difficultyMultiplier + 'px';
+                }
+
+                const frogPosition = frog.getBoundingClientRect();
+                if (
+                    flyPosition.left < frogPosition.right &&
+                    flyPosition.right > frogPosition.left &&
+                    flyPosition.top < frogPosition.bottom &&
+                    flyPosition.bottom > frogPosition.top
+                ) {
+                    score += 1;
+                    scoreElement.textContent = `Score: ${score}`;
+
+                    if (score > highScore) {
+                        highScore = score;
+                        highScoreElement.textContent = `High Score: ${highScore}`;
+                    }
+
+                    if (score % 10 === 0) {
+                        increaseDifficulty();
+                    }
+
+                    fly.remove();
+                    clearInterval(flyInterval);
+                }
+            }, 50);
+        }
+
+        function createRedSquare() {
+            if (gameOver) return;
+
+            const redSquare = document.createElement('div');
+            redSquare.className = 'red-square';
+            redSquare.style.left = Math.random() * (gameWidth - 50) + 'px';
+            redSquare.style.top = '0px';
+            gameArea.appendChild(redSquare);
+
+            const redSquareInterval = setInterval(() => {
+                if (gameOver) {
+                    clearInterval(redSquareInterval);
+                    redSquare.remove();
+                    return;
+                }
+
+                const redSquarePosition = redSquare.getBoundingClientRect();
+
+                if (redSquarePosition.top >= gameHeight) {
+                    redSquare.remove();
+                    clearInterval(redSquareInterval);
+                } else {
+                    redSquare.style.top = redSquare.offsetTop + 7 * difficultyMultiplier + 'px';
+                }
+
+                const frogPosition = frog.getBoundingClientRect();
+                if (
+                    redSquarePosition.left < frogPosition.right &&
+                    redSquarePosition.right > frogPosition.left &&
+                    redSquarePosition.top < frogPosition.bottom &&
+                    redSquarePosition.bottom > frogPosition.top
+                ) {
+                    endGame();
+                }
+            }, 50);
+        }
+
+        function increaseDifficulty() {
+            difficultyMultiplier += 0.1;
+        }
+
+        function updateTimer() {
+            if (gameOver) return;
+
+            timeElapsed++;
+            timerElement.textContent = `Time: ${timeElapsed}s`;
+        }
+
+        function endGame() {
+            gameOver = true;
+            gameOverElement.style.display = 'block';
+            controls.style.display = 'flex';
+        }
+
+        function restartGame() {
+            score = 0;
+            difficultyMultiplier = 1;
+            gameOver = false;
+            timeElapsed = 0;
+
+            scoreElement.textContent = `Score: ${score}`;
+            timerElement.textContent = `Time: ${timeElapsed}s`;
+            gameOverElement.style.display = 'none';
+            controls.style.display = 'none';
+
+            const remainingElements = document.querySelectorAll('.fly, .red-square');
+            remainingElements.forEach(element => element.remove());
+
+            frog.style.left = '50%';
+            frog.style.bottom = '20px';
+
+            instruction.style.display = 'block';  // Show instructions again when restarting
+            hasMoved = false;
+        }
+
+        restartButton.addEventListener('click', restartGame);
+
+        document.addEventListener('keydown', moveFrog);
+
+        setInterval(createFly, 2000);
+        setInterval(createRedSquare, 3000);
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
